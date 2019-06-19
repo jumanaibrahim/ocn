@@ -29,11 +29,14 @@ class LinkSpider (scrapy.Spider):
 		links = response.css('.dataset-heading a::attr(href)').getall()
 
 		for link in links:
+			logger.debug("Scraping and giving out: {}".format(link))
+
 			yield{
 				'links': 'https://catalog.data.gov'+link
 			}
 
 		next_page ='https://catalog.data.gov/dataset?res_format=CSV&groups=climate5434&_groups_limit=0&page='+str(LinkSpider.page_num)
+		logger.debug("Moving on to page number: {}".format(LinkSpider.page_num))
 
 		if LinkSpider.page_num <= 9:
 			LinkSpider.page_num+=1

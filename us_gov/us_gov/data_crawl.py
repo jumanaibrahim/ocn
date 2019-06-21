@@ -3,7 +3,6 @@ import urllib.request
 import re
 import logging
 import json
-
 #create logger and set its level to DEBUG
 logger = logging.getLogger('data_crawl')
 logger.setLevel(logging.DEBUG)

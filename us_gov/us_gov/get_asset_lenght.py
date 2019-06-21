@@ -1,7 +1,9 @@
 #%%
 import requests
 import sys
-from asset_scraping.un_scraper.un_scraper.scrapy_results.base_json import base_json
+# /home/jumana/ocn/ocn/us_gov/us_gov/main_metadata.py
+from us_gov.us_gov.main_metadata import data
+# from asset_scraping.un_scraper.un_scraper.scrapy_results.base_json import base_json
 from urllib3.exceptions import ProtocolError
 
 #%%
@@ -27,10 +29,9 @@ logger.critical("logging started")
 # import the raw list with dictionaries (=> scrapy result: base_json)
 url_lists = []
 
-
 def urls_to_list():
-    for i in base_json:
-        element = i["file[2]url"]
+    for i in data:
+        element = i["files"]
 
         url_lists.append(element)
 
@@ -40,13 +41,9 @@ def urls_to_list():
 #%%
 # EXECUTE FUNCTION
 urls_to_list()
-
-
 #%%
 
-
 all_asset_sizes_list = []
-
 
 def get_asset_lengths(url_list):
     # get each list in url_list
@@ -83,17 +80,10 @@ def get_asset_lengths(url_list):
             except OSError:
                 single_size_list.append("0")
                 continue
-
-
-
-
         print(single_size_list)
         all_asset_sizes_list.append(single_size_list)
-
     print(len(all_asset_sizes_list))
     print(all_asset_sizes_list)
-
-
 #%%
 # EXECUTE FUNCTION
 get_asset_lengths(url_lists)

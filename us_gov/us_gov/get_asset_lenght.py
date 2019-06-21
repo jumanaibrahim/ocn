@@ -27,21 +27,21 @@ logger.critical("logging started")
 
 #%%
 # import the raw list with dictionaries (=> scrapy result: base_json)
-url_lists = []
-
-def urls_to_list():
-    for i in data:
-        element = i["files"]
-
-        url_lists.append(element)
-
-    print(len(url_lists))
-    return url_lists
-
-#%%
-# EXECUTE FUNCTION
-urls_to_list()
-#%%
+url_lists = [['https://data.cdc.gov/api/views/qz8t-eu2e/rows.csv?accessType=DOWNLOAD']]
+#
+# def urls_to_list():
+#     for i in data:
+#         element = i["files"]
+#
+#         url_lists.append(element)
+#
+#     print(len(url_lists))
+#     return url_lists
+#
+# #%%
+# # EXECUTE FUNCTION
+# urls_to_list()
+# #%%
 
 all_asset_sizes_list = []
 

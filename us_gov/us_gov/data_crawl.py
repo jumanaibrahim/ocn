@@ -21,7 +21,8 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 #opening the file that contains all the links with the datasets that need scraping
-urlFile = open("/home/jumana/ocn/ocn/us_gov/url_links.csv", "r") #this is the file created by the spider in links.py
+# urlFile = open("/home/jumana/ocn/ocn/us_gov/url_links.csv", "r") #this is the file created by the spider in links.py
+urlFile = open("/home/jumana/ocn/ocn/us_gov/test_links.csv", "r") #this is the file created by the spider in links.py
 logger.debug("Opening file {}".format(urlFile))
 
 #empty list which will store all the dataset metadata
@@ -84,7 +85,8 @@ def BuildDict(url):
 
 #function which writes all the metadata captured into a file called main_metadata
 def buildFile():
-	with open('main_metadata.txt', 'w') as file:
+	# with open('main_metadata.txt', 'w') as file:
+	with open('test_300_metadata.txt', 'w') as file:
 		file.write(json.dumps(base_json))
 		logger.debug("Writing to file".format())
 

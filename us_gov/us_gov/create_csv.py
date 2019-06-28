@@ -1,13 +1,10 @@
 import pandas as pd
 import logging
-# import datetime
 import os
 import pytz
-# import sys
 import wget
 from urllib.request import urlopen
-# from urllib3.exceptions import ProtocolError
-from main_metadata import data
+from businessUSA_data import data
 from licence_map import license_map
 
 #create logger and set its level to DEBUG
@@ -32,9 +29,16 @@ df = pd.DataFrame.from_dict(data)
 logger.debug("Creating pandas dataframe.".format())
 
 #sort the columns in correct order
-df = df[['name', 'dateCreated', 'author','license','price','categories','_tags','type','description','copyrightHolder','inLanguage','files']]
+df = df[['index','name', 'dateCreated', 'author','license','price','checksum','categories','_tags','type','description','copyrightHolder','workExample','inLanguage','files']]
 #create flag to know which row to delete
 df['del_flag'] = 0
+#add the other standard empty columns
+df.insert(loc = 1, column = '<local>', value = '')
+df.insert(loc = 2, column = '<process>', value = '')
+df.insert(loc = 3, column = '<set public>', value = '')
+df.insert(loc = 4, column = '<register>', value = '')
+df.insert(loc = 5, column = '<reset', value = '')
+df.insert(loc = 6, column = '<delete>', value = '')
 
 #will replace licences with their proper mapping
 logger.debug("Mapping the licences with their proper counterparts.".format())
@@ -57,7 +61,7 @@ def  delete_broken_urls():
 	logger.debug("Deleting broken urls".format())
 	for count,url_list in enumerate(df['files']): #parsing through the column to find the list which holds all urls
 		for inner_count, url in enumerate(url_list): #parsing through each url
-			if ('accessType=DOWNLOAD' in url): #check if the url is a tru download link
+			if ('accessType=DOWNLOAD' in url): #check if the url is a true download link
 				logger.debug("{} is OK".format(url))
 				pass
 			elif (url[-4:]) == '.csv':
@@ -77,37 +81,39 @@ def  delete_broken_urls():
 	df.drop(columns=['del_flag'], inplace = True) #deleting the column which holds the flags
 	df.reset_index(drop = True, inplace = True) #resetting the indexes of the columns to make up for deleted rows
 
+all_asset_sizes_list = [] #empty list for the sizes of all the assets of the raw urls
+destination = '/home/jumana/Desktop/temp_downloads/test.csv' #temporary folder which will hold the files to be downloaded
 
-all_asset_sizes_list = []
-destination = '/home/jumana/Desktop/temp_downloads/test.csv'
-
+#this function gets the size of one single asset
 def get_asset_length(url):
-	try:
+	try: #first attempt is an http request, to get the size of the file without downloading it
 		site = urlopen(url)
 		content_gb = int(site.getheader('Content-Length'))
 		logger.debug("got filesize : {} MB for asset {}".format(content_gb, url))
-	except:
+	except: #if errors, then download the file to the distination folder, get its size and delete the file
+		logger.debug("Beginning download of {}".format(url))
 		wget.download(url, destination)
 		content_gb = os.path.getsize(destination)
 		logger.debug("Size of downloaded file: {} MB for asset {}".format(content_gb,url))
 		os.remove(destination)
 		logger.debug("{} has been removed.".format(url))
-	return content_gb
+	return content_gb #return the size of the asset
 
+#this stores all the sizes returned by get_asset_length() in all_asset_sizes_list
 def  get_all_lengths():
 	for count, url_list in enumerate(df['files']):
-		size_list = []
+		size_list = [] #individual size list for each url link (incase one url has multple assets)
 		for inner_count, url in enumerate(url_list):
-			size = get_asset_length(url)
-			size_list.append(size)
+			size = get_asset_length(url) #calls the previous function
+			size_list.append(size) #appends the size to the single size_list
 		logger.debug("Appending {} for asset {}".format(size_list,url))
-		all_asset_sizes_list.append(size_list)
+		all_asset_sizes_list.append(size_list) #appends the size_list to the main all_asset_sizes_list
 
-file_main = {}
+file_main = {} #empty dictionary to store raw link data in correct format
 def build_files_dict():
 	logger.debug("Beginning to build file_main dictionary.".format())
 	for count, url_list in enumerate(df['files']):
-		file_dict = {}
+		file_dict = {} #individual dictionary for each asset link
 		for inner_count, url in enumerate(url_list):
 			file_dict['file[' + str(inner_count) + ']:url'] = url
 			file_dict['file[' + str(inner_count) + ']:index'] = inner_count + 1
@@ -121,16 +127,16 @@ def build_files_dict():
 		file_main[str(count)] = file_dict
 		logger.debug("Completed appending for asset number: {}".format(count))
 
-def adding_url_info():
+def adding_url_info(): #formats the pandas dataframe to add the missing columns and format it correctly for each dataset
 	logger.debug("Started adding_url_info.".format())
 	for index, inner_dict in file_main.items():
 		for key in inner_dict:
 			if key not in df:
-				df[key] = ''
-				df.at[int(index), key] = inner_dict[key]
+				df[key] = '' #adds the column if the column doesn't exist
+				df.at[int(index), key] = inner_dict[key] #adds the info from the dictionary previously created
 				logger.debug("Added {} : {}".format(df.at[int(index), key] , inner_dict[key]))
 			else:
-				df.at[int(index), key] = inner_dict[key]
+				df.at[int(index), key] = inner_dict[key] #if column already exists, then just adds the info
 		logger.debug("Finished formatting for asset : {}".format(index))
 
 
@@ -140,8 +146,9 @@ build_files_dict()
 adding_url_info()
 
 #put the munged data into a csv
+df.drop(columns = 'files', inplace = True)
 df=df.transpose()
-file_name = "/earth_and_climate.csv"
+file_name = "/businessUSA.csv"
 path = os.getcwd()
 print(path+file_name)
 df.to_csv(path+file_name)

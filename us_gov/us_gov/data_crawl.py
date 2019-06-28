@@ -1,4 +1,4 @@
-import bs4 as bs
+import bs4 as bs #importing beautiful soup for html parsing
 import urllib.request
 import re
 import logging
@@ -20,9 +20,11 @@ ch.setLevel(logging.DEBUG)
 #add the created handler to logger
 logger.addHandler(ch)
 
+file_to_open = "/home/jumana/ocn/ocn/us_gov/businessUSA_links.csv"
+
 #opening the file that contains all the links with the datasets that need scraping
-# urlFile = open("/home/jumana/ocn/ocn/us_gov/url_links.csv", "r") #this is the file created by the spider in links.py
-urlFile = open("/home/jumana/ocn/ocn/us_gov/test_links.csv", "r") #this is the file created by the spider in links.py
+urlFile = open(file_to_open, "r") #this is the file created by the spider in links.py
+# urlFile = open("/home/jumana/ocn/ocn/us_gov/test_links.csv", "r") #this is the file created by the spider in links.py
 logger.debug("Opening file {}".format(urlFile))
 
 #empty list which will store all the dataset metadata
@@ -37,6 +39,7 @@ def BuildDict(url):
 	tags=[] #holds all tags
 	rawLink = soup.find_all("a", attrs={'data-format': 'csv'}) #finds all the csv rawlinks
 	tagList = soup.find_all('a',{'class': 'tag'}) #finds all the tags
+	categories = "Interdisciplinary"#the category you are currently scraping, change this once you switch between categories
 
 	#adds rawlinks to the 'links' list.
 	for i in range(0, len(rawLink)):
@@ -50,10 +53,12 @@ def BuildDict(url):
 		dict['name'] = soup.find("h1", attrs={'itemprop': 'name'}).text.strip()
 		dict['dateCreated'] = soup.find('th', text=re.compile('Metadata Created Date')).parent.find('td').text.strip()
 		dict['price'] = 0
-		dict['categories'] = 'Earth & Climate'
+		dict['checksum'] = 0
+		dict['categories'] = categories
 		dict['_tags'] = tags # post on slack --> check what tags are allowed
 		dict['type'] = 'dataset'
 		dict['inLanguage'] = 'en'
+		dict['workExample'] = ''
 		dict['files'] = links
 	except:
 		pass
@@ -76,17 +81,20 @@ def BuildDict(url):
 	except:
 		dict['description'] = ''
 
-	#gives the value of the copyright holder, same as that of the author
+	#puts the author as the copyright holder
 	dict['copyrightHolder'] = dict['author']
+	dict['index'] = dict['name']
 
 	#appends the dictionary into the main metadata list
 	base_json.append(dict)
 	logger.debug("Finished appending dictionary for : {}".format(dict['name']))
 
+
+md_filename= 'businessUSA_data' #name of the metadata file
 #function which writes all the metadata captured into a file called main_metadata
 def buildFile():
 	# with open('main_metadata.txt', 'w') as file:
-	with open('test_300_metadata.txt', 'w') as file:
+	with open(md_filename+'.txt', 'w') as file:
 		file.write(json.dumps(base_json))
 		logger.debug("Writing to file".format())
 

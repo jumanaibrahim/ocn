@@ -81,7 +81,7 @@ Scroll down to the `def buildFile()`. Assign a filename for your metadata file b
 ```python
 md_filename= 'energy_data'
 ```
-### create_csv.py
+* ### create_csv.py
 
 #### Set up
 Open `create_csv.py`. Import the data dictionary from your `energy_data.py` file. (This is the file created after running data_crawl.py.)

@@ -4,7 +4,7 @@ import os
 import pytz
 import wget
 from urllib.request import urlopen
-from businessUSA_data import data
+from localgov_data import data
 from licence_map import license_map
 
 #create logger and set its level to DEBUG
@@ -91,12 +91,17 @@ def get_asset_length(url):
 		content_gb = int(site.getheader('Content-Length'))
 		logger.debug("got filesize : {} MB for asset {}".format(content_gb, url))
 	except: #if errors, then download the file to the distination folder, get its size and delete the file
+		pass
+	try:
 		logger.debug("Beginning download of {}".format(url))
 		wget.download(url, destination)
 		content_gb = os.path.getsize(destination)
 		logger.debug("Size of downloaded file: {} MB for asset {}".format(content_gb,url))
 		os.remove(destination)
 		logger.debug("{} has been removed.".format(url))
+	except:
+		content_gb = 'ERROR'
+		pass
 	return content_gb #return the size of the asset
 
 #this stores all the sizes returned by get_asset_length() in all_asset_sizes_list
@@ -148,7 +153,7 @@ adding_url_info()
 #put the munged data into a csv
 df.drop(columns = 'files', inplace = True)
 df=df.transpose()
-file_name = "/businessUSA.csv"
+file_name = "/local_gov.csv"
 path = os.getcwd()
 print(path+file_name)
 df.to_csv(path+file_name)

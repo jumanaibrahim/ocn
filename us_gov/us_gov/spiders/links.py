@@ -23,12 +23,12 @@ class LinkSpider (scrapy.Spider):
 	name = "mainlinks"
 	#EARTH &CLIMATE
 	# start_urls = ['https://catalog.data.gov/dataset?res_format=CSV&groups=climate5434&_groups_limit=0&page=1'] #starts at first page
-	start_urls = ['https://catalog.data.gov/dataset?res_format=CSV&groups=businessusa4208&_groups_limit=0&page=1']
+	start_urls = ['https://catalog.data.gov/dataset?res_format=CSV&groups=local&_groups_limit=0&page=1']
 	page_num = 2 #page number it will increment to
 
 
 	def parse(self, response):
-		max_page = 9 #maximum number of pages to be scraped
+		max_page = 6 #maximum number of pages to be scraped
 		links = response.css('.dataset-heading a::attr(href)').getall() #gets all the links
 
 		for link in links:
@@ -39,7 +39,7 @@ class LinkSpider (scrapy.Spider):
 			}
 
 		# next_page ='https://catalog.data.gov/dataset?res_format=CSV&groups=climate5434&_groups_limit=0&page='+str(LinkSpider.page_num) #increments to next page
-		next_page ='https://catalog.data.gov/dataset?res_format=CSV&groups=businessusa4208&_groups_limit=0&page='+str(LinkSpider.page_num) #increments to next page
+		next_page ='https://catalog.data.gov/dataset?res_format=CSV&groups=local&_groups_limit=0&page='+str(LinkSpider.page_num) #increments to next page
 		logger.debug("Moving on to page number: {}".format(LinkSpider.page_num))
 
 		if LinkSpider.page_num <= max_page:  #only scrapes the first 9 pages.

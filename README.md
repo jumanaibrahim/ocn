@@ -9,7 +9,7 @@ Open OCN with an IDE of your choice. I prefer using [PyCharm](https://www.jetbra
 1. links.py,
 1. data_crawl.py
 1. create_csv.py
-
+___
 * ### links.py
 
 #### Set up
@@ -51,7 +51,7 @@ I chose to name my file energy_links.csv.
 * Upon its successful completion, a csv file should have popped up in your folder. Open it and you will notice that not only has it scraped all your urls, but it also has the word **'links'** on the first line of the file. Delete this and any other occurrence of the word that you find.
 
 _You're ready to move on to stage 2!_
-
+___
 * ### data_crawl.py
 
 #### Set up
@@ -81,6 +81,7 @@ Scroll down to the `def buildFile()`. Assign a filename for your metadata file b
 ```python
 md_filename= 'energy_data'
 ```
+___
 * ### create_csv.py
 
 #### Set up

@@ -1,5 +1,5 @@
-#ocn
-####Documentation and User Manual.
+# ocn
+#### Documentation and User Manual.
 
 OCN is a scraper to crawl through the US Government's [Open Data](https://www.data.gov/) catalogue
 
@@ -10,9 +10,9 @@ Open OCN with an IDE of your choice. I prefer using [PyCharm](https://www.jetbra
 1. data_crawl.py
 1. create_csv.py
 
-* ###links.py
+* ### links.py
 
-####Set up
+#### Set up
 
 Open the following url in your browser: https://catalog.data.gov/dataset. 
 Specify both the format and the topic you want to crawl. 
@@ -27,7 +27,7 @@ Add your _base url_ as a single item in the `start_urls` list.
 start_urls = ['https://catalog.data.gov/dataset?res_format=CSV&groups=energy9485&_vocab_category_all_limit=0&page=1']
 ```
 
-####Scraping
+#### Scraping
 
 Scroll down to the `def parse(self,response) ` method. 
 
@@ -38,10 +38,10 @@ Add this edited url into the next_page variable.
 next_page ='https://catalog.data.gov/dataset?res_format=CSV&groups=energy9485&_vocab_category_all_limit=0&page='+str(LinkSpider.page_num)
 ```
 
-######Optional
+###### Optional
 Edit the `max_page` variable to better reflect the number of pages you will/want to parse.
 
-####Running links.py
+#### Running links.py
 Run this command in your terminal
 ``` bash
 scrapy crawl mainlinks -o name-of-file.csv
@@ -52,9 +52,9 @@ I chose to name my file energy_links.csv.
 
 _You're ready to move on to stage 2!_
 
-* ###data_crawl.py
+* ### data_crawl.py
 
-####Set up
+#### Set up
 Open up `data_crawl.py`
 Set the `name_to_open` variable to the name of the file which holds all your links (the file created by links.py).
 
@@ -66,7 +66,7 @@ name_to_open = "energy_links"
 file_to_open = "/home/user/ocn/ocn/us_gov/"+name_to_open+".csv"
 ```
 
-####Scraping
+#### Scraping
 Read through `def BuildDict()  ` and replace any attributes to correspond to the ones you chose. 
 For instance, the topic of 'Energy' belongs to the "Physics & Energy" category, and you have chosen to find csv files. So your code should reflect this:
 
@@ -81,7 +81,7 @@ Scroll down to the `def buildFile()`. Assign a filename for your metadata file b
 ```python
 md_filename= 'energy_data'
 ```
-###create_csv.py
+### create_csv.py
 
 #### Set up
 Open `create_csv.py`. Import the data dictionary from your `energy_data.py` file. (This is the file created after running data_crawl.py.)
@@ -92,7 +92,7 @@ from energy_data import data
 
 Set a filepath to a temporary csv file and assign it to the `destination` variable. 
 
->This is the the temporary file created when downloading your datasets in order to determine their size. These datasets will only be downloaded if "content-lenght" is not included in the header file of the dataset.
+> This is the the temporary file created when downloading your datasets in order to determine their size. These datasets will only be downloaded if "content-lenght" is not included in the header file of the dataset.
 
 ```python
 destination = '/home/user/Desktop/temp_downloads/test.csv' 
@@ -104,4 +104,4 @@ Change the `file_name` variable and assign it a name of your choice for your _fi
 file_name = "/final_energy_data.csv"
 ```
 
-#####Run create_csv.py and you're done!
+##### Run create_csv.py and you're done!

@@ -19,7 +19,7 @@ ch.setLevel(logging.DEBUG)
 
 #add the created handler to logger
 logger.addHandler(ch)
-name_to_open = "local_govLINKS"
+name_to_open = "gov_300"
 file_to_open = "/home/jumana/ocn/ocn/us_gov/"+name_to_open+".csv"
 
 #opening the file that contains all the links with the datasets that need scraping
@@ -39,7 +39,7 @@ def BuildDict(url):
 	tags=[] #holds all tags
 	rawLink = soup.find_all("a", attrs={'data-format': 'csv'}) #finds all the csv rawlinks
 	tagList = soup.find_all('a',{'class': 'tag'}) #finds all the tags
-	categories = "Demography"#the category you are currently scraping, change this once you switch between categories
+	categories = "Other", #the category you are currently scraping, change this once you switch between categories
 
 	#adds rawlinks to the 'links' list.
 	for i in range(0, len(rawLink)):
@@ -90,7 +90,7 @@ def BuildDict(url):
 	logger.debug("Finished appending dictionary for : {}".format(dict['name']))
 
 
-md_filename= 'localgovmetadata' #name of the metadata file
+md_filename= 'gov100_data' #name of the metadata file
 #function which writes all the metadata captured into a file called main_metadata
 def buildFile():
 	# with open('main_metadata.txt', 'w') as file:

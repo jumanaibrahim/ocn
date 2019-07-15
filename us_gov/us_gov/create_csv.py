@@ -4,7 +4,7 @@ import os
 import pytz
 import wget
 from urllib.request import urlopen
-from localgov_data import data
+from gov300_data import data
 from licence_map import license_map
 
 #create logger and set its level to DEBUG
@@ -111,6 +111,7 @@ def  get_all_lengths():
 		for inner_count, url in enumerate(url_list):
 			size = get_asset_length(url) #calls the previous function
 			size_list.append(size) #appends the size to the single size_list
+		logger.debug("Asset number: {}".format(count))
 		logger.debug("Appending {} for asset {}".format(size_list,url))
 		all_asset_sizes_list.append(size_list) #appends the size_list to the main all_asset_sizes_list
 
@@ -153,7 +154,7 @@ adding_url_info()
 #put the munged data into a csv
 df.drop(columns = 'files', inplace = True)
 df=df.transpose()
-file_name = "/local_gov.csv"
+file_name = "/govother_final.csv"
 path = os.getcwd()
 print(path+file_name)
 df.to_csv(path+file_name)

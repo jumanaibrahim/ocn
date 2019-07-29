@@ -4,7 +4,7 @@ import os
 import pytz
 import wget
 from urllib.request import urlopen
-from gov300_data import data
+from moregov_data import data
 from licence_map import license_map
 
 #create logger and set its level to DEBUG

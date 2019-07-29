@@ -82,7 +82,10 @@ def BuildDict(url):
 		dict['description'] = ''
 
 	#puts the author as the copyright holder
-	dict['copyrightHolder'] = dict['author']
+	try:
+		dict['copyrightHolder'] = dict['author']
+	except:
+		pass
 	dict['index'] = dict['name']
 
 	#appends the dictionary into the main metadata list
@@ -90,7 +93,7 @@ def BuildDict(url):
 	logger.debug("Finished appending dictionary for : {}".format(dict['name']))
 
 
-md_filename= 'gov100_data' #name of the metadata file
+md_filename= 'moregov_data' #name of the metadata file
 #function which writes all the metadata captured into a file called main_metadata
 def buildFile():
 	# with open('main_metadata.txt', 'w') as file:
